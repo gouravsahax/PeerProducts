@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function createRecc(data: FormData) {
   const session = await auth();
@@ -79,4 +80,115 @@ export async function getMyReccs() {
     console.error(err);
     throw new Error("Error occurred while fetching recommendations");
   }
+}
+
+export async function getARecc(id:string) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized");
+  }
+
+  try{
+    const reccData = await prisma.recc.findUnique({
+      where : {
+        id : id
+      }
+    })
+
+    if(reccData?.userId !== session.user.id){
+      throw new Error("Unauthorized");
+    }
+
+    return {title:reccData?.title, desc:reccData?.description}
+  } catch {
+    throw new Error("")
+  }
+}
+
+export async function updateRecc(id: string, formData: FormData) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized");
+  }
+
+  const title = String(formData.get("title") ?? "").trim();
+  const description = String(formData.get("desc") ?? "").trim();
+
+  if (!title) {
+    throw new Error("Title is required");
+  }
+
+  const reccData = await prisma.recc.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      userId: true,
+    },
+  });
+
+  if (!reccData) {
+    throw new Error("Recommendation not found");
+  }
+
+  if (reccData.userId !== session.user.id) {
+    throw new Error("Unauthorized");
+  }
+
+  await prisma.recc.update({
+    where: { id },
+    data: {
+      title,
+      description: description || null,
+    },
+  });
+
+  revalidatePath("/reccs");
+  revalidatePath(`/reccs/edit/${id}`);
+  redirect("/reccs");
+}
+
+export async function deleteRecc(reccId: string) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized");
+  }
+
+  const recc = await prisma.recc.findUnique({
+    where: { id: reccId },
+    select: { id: true, userId: true },
+  });
+
+  if (!recc) {
+    throw new Error("Recommendation not found");
+  }
+
+  if (recc.userId !== session.user.id) {
+    throw new Error("Forbidden");
+  }
+
+  await prisma.$transaction(
+    async (tx) => {
+      await tx.recc.delete({
+        where: { id: reccId },
+      });
+
+      await tx.user.update({
+        where: { id: session.user.id },
+        data: {
+          reccCount: {
+            decrement: 1,
+          },
+        },
+      });
+    },
+    {
+      maxWait: 15000,
+      timeout: 20000,
+    }
+  );
+
+  revalidatePath("/reccs");
 }

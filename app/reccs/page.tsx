@@ -1,4 +1,4 @@
-import { getMyReccs } from "@/lib/recc-action"
+import { getMyReccs, deleteRecc } from "@/lib/recc-action"
 import Link from "next/link";
 
 const page = async () => {
@@ -16,8 +16,10 @@ const page = async () => {
             <p className="mb-4">{recc.description}</p>
             <Link className="underline mb-4" href={recc.url || "/"}>{recc.type}</Link>
             <div className="flex gap-2 mb-2">
-              <button className="cursor-pointer px-2 py-1 border-1 border-zinc-800 hover:bg-zinc-300 hover:text-black rounded-sm text-md">Edit</button>
-              <button className="cursor-pointer px-2 py-1 border-1 border-zinc-800 hover:bg-zinc-300 hover:text-black rounded-sm text-md">Delete</button>
+              <Link href={`/reccs/edit/${recc.id}`} className="cursor-pointer px-2 py-1 border-1 border-zinc-800 hover:bg-zinc-300 hover:text-black rounded-sm text-md">Edit</Link>
+              <form action={deleteRecc.bind(null, recc.id)}>
+                <button type="submit" className="cursor-pointer px-2 py-1 border-1 border-zinc-800 hover:bg-zinc-300 hover:text-black rounded-sm text-md">Delete</button>
+              </form>
             </div>
           </div>
         ))}
