@@ -73,6 +73,7 @@ model Recc {
   title       String
   description String?
   url         String?
+  imageUrl    String?
 
   type        String
 

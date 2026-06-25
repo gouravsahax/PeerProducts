@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAllRecs } from "@/lib/recc-action";
 import { ThumbsUp, MessageCircle } from "lucide-react";
+import ReccImage from "./components/ReccImage";
 
 export default async function Home() {
   const reccs = await getAllRecs();
@@ -50,6 +51,10 @@ export default async function Home() {
                   <p className="text-sm text-zinc-400 mt-1">
                     {recc.description}
                   </p>
+                )}
+
+                {recc.imageUrl && (
+                  <ReccImage src={recc.imageUrl} alt={recc.title} />
                 )}
 
                 {/* Footer */}

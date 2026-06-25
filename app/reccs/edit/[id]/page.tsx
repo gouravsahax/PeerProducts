@@ -1,4 +1,5 @@
 import { getARecc, updateRecc } from "@/lib/recc-action";
+import SubmitButton from "../../../components/SubmitButton";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -16,7 +17,7 @@ const page = async ({params}: PageProps) => {
         <input type="text" name="title" defaultValue={title} className="border-1 border-zinc-800"/>
         <h1>description</h1>
         <input type="text" name="desc" defaultValue={desc! || ""} className="border-1 border-zinc-800"/>
-        <button className="mt-4 cursor-pointer px-2 py-1 border-1 border-zinc-300 hover:bg-zinc-300 hover:text-black rounded-sm text-md" type="submit">Submit</button>
+        <SubmitButton className="mt-4 cursor-pointer px-2 py-1 border-1 border-zinc-300 hover:bg-zinc-300 hover:text-black rounded-sm text-md w-full">Submit</SubmitButton>
       </form>
     </div>
   )

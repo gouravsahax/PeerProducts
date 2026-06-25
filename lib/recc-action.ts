@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { uploadImage } from "./cloudinary";
 
 export async function createRecc(data: FormData) {
   const session = await auth();
@@ -12,9 +13,15 @@ export async function createRecc(data: FormData) {
   const desc = String(data.get("desc") ?? "").trim();
   const url = String(data.get("url") ?? "").trim();
   const type = String(data.get("type") ?? "").trim();
+  const imageFile = data.get("image") as File | null;
 
   if (!title || !url || !type) {
     throw new Error("Missing required fields");
+  }
+
+  let imageUrl: string | null = null;
+  if (imageFile && imageFile.size > 0) {
+    imageUrl = await uploadImage(imageFile);
   }
 
   await prisma.$transaction(
@@ -24,6 +31,7 @@ export async function createRecc(data: FormData) {
           title,
           description: desc,
           url,
+          imageUrl,
           type,
           userId: session.user.id,
         },
@@ -39,6 +47,7 @@ export async function createRecc(data: FormData) {
     }
   );
 
+  revalidatePath("/");
   redirect("/reccs");
 }
 
@@ -52,6 +61,7 @@ export async function getAllRecs() {
       title: true,
       description: true,
       url: true,
+      imageUrl: true,
       type: true,
       likeCount: true,
       commentCount: true,
