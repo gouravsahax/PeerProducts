@@ -7,6 +7,8 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - AUTH_SECRET=lijadhv87svhdfbvaw8oe87rvbaevsu
       - AUTH_TRUST_HOST=true
+      - AUTH_URL=https://peer.idea-rader.com/api/auth
+      - NEXTAUTH_URL=https://peer.idea-rader.com
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
