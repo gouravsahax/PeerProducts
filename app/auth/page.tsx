@@ -48,7 +48,7 @@ export default function AuthPage() {
           PeerProducts
         </h1>
         <p className="text-lg md:text-xl text-zinc-400 font-normal leading-relaxed">
-          A social network where you can discover products through real user recommendations and reviews
+          A social network where you can discover products through real user recommendations and reviews.
         </p>
         <div className="w-full max-w-sm mt-4">
           <SignInButton />
