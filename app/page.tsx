@@ -81,7 +81,6 @@ export default async function Home({
 
   const searchParam = search ? `&search=${encodeURIComponent(search)}` : "";
 
-  // Split into left and right columns for desktop masonry
   const col1 = reccs.filter((_, idx) => idx % 2 === 0);
   const col2 = reccs.filter((_, idx) => idx % 2 !== 0);
 
@@ -89,7 +88,6 @@ export default async function Home({
     <div className="w-screen flex flex-col items-center">
       <div className="w-full min-h-screen lg:w-[85vw] xl:w-[80vw] flex flex-col border-x border-zinc-800">
 
-        {/* Search Bar */}
         <div className="w-full p-4 border-b border-zinc-900">
           <form action="/" method="GET" className="flex gap-2 max-w-md mx-auto">
             <input type="hidden" name="page" value="1" />
@@ -123,22 +121,18 @@ export default async function Home({
           </div>
         ) : (
           <>
-            {/* Mobile Layout (Single flat column) */}
             <div className="w-full flex flex-col gap-4 p-4 md:hidden">
               {reccs.map((recc) => (
                 <ReccCard key={recc.id} recc={recc} />
               ))}
             </div>
 
-            {/* Desktop Layout (Masonry 2 columns) */}
             <div className="w-full hidden md:grid grid-cols-2 gap-4 p-4 items-start">
-              {/* Left Column */}
               <div className="flex flex-col gap-4">
                 {col1.map((recc) => (
                   <ReccCard key={recc.id} recc={recc} />
                 ))}
               </div>
-              {/* Right Column */}
               <div className="flex flex-col gap-4">
                 {col2.map((recc) => (
                   <ReccCard key={recc.id} recc={recc} />
@@ -148,7 +142,6 @@ export default async function Home({
           </>
         )}
 
-        {/* Pagination Controls */}
         {totalPages > 1 && (
           <div className="flex justify-center items-center gap-4 py-6 border-t border-zinc-900 mt-auto bg-zinc-950/20">
             {currentPage > 1 ? (

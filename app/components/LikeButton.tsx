@@ -20,7 +20,6 @@ export default function LikeButton({
   const [isPending, startTransition] = useTransition();
 
   const handleLike = () => {
-    // Optimistic UI updates
     const nextLiked = !liked;
     setLiked(nextLiked);
     setCount(prev => nextLiked ? prev + 1 : prev - 1);
@@ -29,7 +28,6 @@ export default function LikeButton({
       try {
         await toggleLike(reccId);
       } catch (error) {
-        // Rollback on error
         setLiked(liked);
         setCount(count);
         console.error('Failed to toggle like:', error);
