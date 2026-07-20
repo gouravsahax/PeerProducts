@@ -6,14 +6,13 @@
 
 ---
 
-
 ### How to Run Locally
 
 To run this application on your local computer:
 
 1. **Install dependencies:**
    ```bash
-   npm ci
+   npm i
    ```
    *(Downloads and installs all library packages needed to run the website).*
 
