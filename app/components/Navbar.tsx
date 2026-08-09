@@ -13,16 +13,16 @@ const Navbar = () => {
         <span className="hidden sm:inline">PeerProducts</span>
         <div className='flex gap-6'>
           <Link href='/' className={`py-2 + ${path === '/' ? 'border-b-2 border-white' : ''}`} >
-              home
+              Home
           </Link>
           <Link href='/create' className={`py-2 + ${path === '/create' ? 'border-b-2 border-white' : ''}`}>
-              create
+              Create
           </Link>
           <Link href='/reccs' className={`py-2 + ${path === '/reccs' ? 'border-b-2 border-white' : ''}`}>
-              my reccs
+              My Reccs
           </Link>
           <Link href='/profile' className={`py-2 + ${path === '/profile' ? 'border-b-2 border-white' : ''}`}>
-              profile
+              Profile
           </Link>
         </div>
       </div>
