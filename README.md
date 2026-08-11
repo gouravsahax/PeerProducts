@@ -2,6 +2,10 @@
 
 > A type-safe product recommendation social network built with Next.js 16, React 19, Prisma, and Neon PostgreSQL.
 
+PeerProducts is a social platform where users can discover, share, and get product recommendations from people with similar tastes, using Next.js 16 Server Components to keep pages fast and easy to browse while staying friendly to accessibility tools and search engines.
+
+The backend is designed with Prisma ORM and Neon PostgreSQL to model users, products, and their social connections. Google OAuth login through NextAuth allows people to sign in securely and start getting personalized recommendations right away, with automated deployments keeping the app reliably up to date on Render.
+
 **Live Platform:** [https://peer.idea-rader.com](https://peer.idea-rader.com)
 
 ---
