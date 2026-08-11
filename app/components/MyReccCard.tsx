@@ -4,11 +4,11 @@ import { deleteRecc } from "@/lib/recc-action";
 
 export default function MyReccCard({ recc }: { recc: any }) {
   return (
-    <div className="border-1 border-zinc-800 px-4 py-2 rounded-sm flex flex-col bg-black text-zinc-300">
+    <div className="border-1 border-zinc-700 px-4 py-2 rounded-sm flex flex-col bg-black text-zinc-300">
       <h3 className="text-lg uppercase mb-2">{recc.title}</h3>
       <p className="mb-4">{recc.description}</p>
       {recc.imageUrl && (
-        <div className="mb-4 overflow-hidden rounded-sm border border-zinc-800">
+        <div className="mb-4 overflow-hidden rounded-sm border-1 border-zinc-700">
           <img src={recc.imageUrl} alt={recc.title} className="w-full object-cover max-h-[200px]" />
         </div>
       )}

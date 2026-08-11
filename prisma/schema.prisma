@@ -13,12 +13,12 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(cuid())
+  id            String   @id @default(cuid()) @unique
   name          String?
   email         String?  @unique
   emailVerified DateTime?
   image         String?
-  username      String?  @unique
+  username      String  @default(cuid()) @unique
   bio           String?
 
   reccCount     Int @default(0)
@@ -77,7 +77,7 @@ model Recc {
   type        String
 
   userId      String
-  user        User @relation(fields: [userId], references: [id])
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   likeCount   Int @default(0)
   likes       Like[]

@@ -8,7 +8,7 @@ export default function Loading() {
         
         <div className="w-32 h-6 bg-zinc-800 rounded mb-6" />
 
-        <hr className="border-zinc-800 w-full mb-6" />
+        <hr className="border-t-1 border-zinc-700 w-full mb-6" />
 
         <div className="w-full space-y-4">
           <div className="w-full h-12 bg-zinc-950/40 border border-zinc-900 rounded-xl flex items-center px-3 gap-3">

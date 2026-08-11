@@ -31,9 +31,9 @@ export default async function Home({
 
   return (
     <div className="w-screen flex flex-col items-center">
-      <div className="w-full min-h-screen lg:w-[85vw] xl:w-[80vw] flex flex-col border-x border-zinc-800">
+      <div className="w-full min-h-screen lg:w-[85vw] xl:w-[80vw] flex flex-col border-x-1 border-zinc-700">
 
-        <div className="w-full p-4 border-b border-zinc-900">
+        <div className="w-full p-4 border-b-1 border-zinc-700">
           <form action="/" method="GET" className="flex gap-2 max-w-md mx-auto">
             <input type="hidden" name="page" value="1" />
             <input
@@ -41,19 +41,19 @@ export default async function Home({
               name="search"
               placeholder="Search by type (e.g. Book, Sunscreen, Chair)..."
               defaultValue={search}
-              className="flex-1 px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-sm text-sm focus:outline-none focus:border-zinc-700 text-white placeholder-zinc-600"
+              className="flex-1 px-4 py-2 bg-zinc-950 border-1 border-zinc-700 rounded-sm text-sm focus:outline-none focus:border-zinc-500 text-white placeholder-zinc-600"
             />
             {search && (
               <Link
                 href="/?page=1"
-                className="px-3 py-2 border border-zinc-800 hover:border-zinc-700 text-zinc-500 hover:text-zinc-300 rounded-sm text-sm flex items-center justify-center transition-colors"
+                className="px-3 py-2 border-1 border-zinc-700 hover:border-zinc-500 text-zinc-500 hover:text-zinc-300 rounded-sm text-sm flex items-center justify-center transition-colors"
               >
                 Clear
               </Link>
             )}
             <button
               type="submit"
-              className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white rounded-sm text-sm font-medium transition-colors cursor-pointer"
+              className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border-1 border-zinc-700 text-zinc-300 hover:text-white rounded-sm text-sm font-medium transition-colors cursor-pointer"
             >
               Search
             </button>
@@ -88,7 +88,7 @@ export default async function Home({
         )}
 
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-4 py-6 border-t border-zinc-900 mt-auto bg-zinc-950/20">
+          <div className="flex justify-center items-center gap-4 py-6 border-t-1 border-zinc-700 mt-auto bg-zinc-950/20">
             {currentPage > 1 ? (
               <Link
                 href={`/?page=${currentPage - 1}${searchParam}`}

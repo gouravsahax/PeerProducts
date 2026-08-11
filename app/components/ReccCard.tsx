@@ -11,23 +11,23 @@ export default async function ReccCard({ recc }: { recc: any }) {
 
   return (
     <article
-      className="border border-zinc-800 rounded-md px-4 py-4 bg-zinc-950/40 flex flex-col gap-3"
+      className="border-1 border-zinc-700 rounded-md px-4 py-4 bg-zinc-950/40 flex flex-col gap-3"
     >
       <div className="flex items-center gap-2 text-sm text-zinc-400 pb-2">
         {user?.image ? (
-          <Image 
+          <Image
             src={user.image}
             alt="User Avatar"
-            width={20}
-            height={20}
+            width={30}
+            height={30}
             className="rounded-full"
           />
         ) : (
           <User className="h-5 w-5" />
         )}
-        <span className="text-blue-300 underline underline-offset-2 font-medium">
-          <Link href={`/profile/${user?.id}`}>
-            {user?.name ? `@${user.name}` : "Unknown"}
+        <span className="text-white hover:underline hover:underline-offset-2 font-medium">
+          <Link href={`/profile/${user?.username}`}>
+            {user?.name ? user.name : "Unknown"}
           </Link>
         </span>
         <span>→</span>

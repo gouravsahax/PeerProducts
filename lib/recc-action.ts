@@ -113,6 +113,10 @@ const getCachedMyReccs = unstable_cache(
   }
 );
 
+export async function getReccsByUserId(id:string){
+  return getCachedMyReccs(id);
+}
+
 export async function createRecc(data: FormData) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");

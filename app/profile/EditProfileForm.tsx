@@ -131,7 +131,7 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
         )}
       </div>
 
-      <hr className="border-zinc-800 my-6" />
+      <hr className="border-t-1 border-zinc-700 my-6" />
 
       <div className="space-y-4 text-zinc-300">
         <div className="flex items-center gap-3 px-3 py-2 bg-zinc-950/40 border border-zinc-900 rounded-xl">
