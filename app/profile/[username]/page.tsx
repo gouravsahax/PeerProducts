@@ -1,19 +1,29 @@
 import { getUserProfile } from "@/lib/user-action";
-import { getReccsByUserId } from "@/lib/recc-action";
+import { getPaginatedReccsByUserId } from "@/lib/recc-action";
 import Image from "next/image";
 import { Mail, Award } from "lucide-react";
 import ReccCard from "../../components/ReccCard";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export default async function Page({ params }: { params: { username: string } }) {
+export default async function Page({ 
+  params,
+  searchParams,
+}: { 
+  params: Promise<{ username: string }>;
+  searchParams: Promise<{ page?: string }>;
+}) {
   const { username } = await params;
+  const { page } = await searchParams;
+  const currentPage = parseInt(page || "1", 10);
+
   const user = await getUserProfile(username);
   
   if (!user) {
     notFound();
   }
 
-  const { reccs, count } = await getReccsByUserId(user.id);
+  const { reccs, total, totalPages } = await getPaginatedReccsByUserId(user.id, currentPage, 8);
 
   const getInitials = (fullName: string | null) => {
     if (!fullName) return "U";
@@ -56,7 +66,7 @@ export default async function Page({ params }: { params: { username: string } })
             <Award className="w-5 h-5 text-zinc-500 shrink-0" />
             <div className="flex flex-col">
               <span className="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Recommendations</span>
-              <span className="text-sm text-white font-medium">{count}</span>
+              <span className="text-sm text-white font-medium">{total}</span>
             </div>
           </div>
         </div>
@@ -72,6 +82,40 @@ export default async function Page({ params }: { params: { username: string } })
           reccs.map((recc) => (
             <ReccCard key={recc.id} recc={recc} />
           ))
+        )}
+
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4 py-6 border-t-1 border-zinc-700 mt-auto bg-zinc-950/20">
+            {currentPage > 1 ? (
+              <Link
+                href={`/profile/${username}?page=${currentPage - 1}`}
+                className="px-4 py-2 border-1 border-zinc-700 hover:border-zinc-500 rounded-sm text-sm font-medium transition-colors text-white"
+              >
+                Previous
+              </Link>
+            ) : (
+              <span className="px-4 py-2 border-1 border-zinc-800 text-zinc-600 rounded-sm text-sm font-medium cursor-not-allowed">
+                Previous
+              </span>
+            )}
+
+            <span className="text-sm text-zinc-400">
+              Page {currentPage} of {totalPages}
+            </span>
+
+            {currentPage < totalPages ? (
+              <Link
+                href={`/profile/${username}?page=${currentPage + 1}`}
+                className="px-4 py-2 border-1 border-zinc-700 hover:border-zinc-500 rounded-sm text-sm font-medium transition-colors text-white"
+              >
+                Next
+              </Link>
+            ) : (
+              <span className="px-4 py-2 border-1 border-zinc-800 text-zinc-600 rounded-sm text-sm font-medium cursor-not-allowed">
+                Next
+              </span>
+            )}
+          </div>
         )}
       </div>
     </div>

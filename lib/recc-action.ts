@@ -117,6 +117,53 @@ export async function getReccsByUserId(id:string){
   return getCachedMyReccs(id);
 }
 
+const getCachedPaginatedUserReccs = (
+  userId: string,
+  page: number,
+  limit: number,
+  currentUserId?: string
+) => {
+  return unstable_cache(
+    async () => {
+      const skip = (page - 1) * limit;
+      
+      const [reccs, user] = await Promise.all([
+        prisma.recc.findMany({
+          where: { userId },
+          orderBy: { createdAt: "desc" },
+          skip,
+          take: limit,
+          include: {
+            likes: currentUserId ? { where: { userId: currentUserId } } : false,
+          }
+        }),
+        prisma.user.findUnique({
+          where: { id: userId },
+          select: { reccCount: true },
+        }),
+      ]);
+
+      const total = user?.reccCount ?? 0;
+
+      return {
+        reccs,
+        total,
+        totalPages: Math.ceil(total / limit),
+      };
+    },
+    ["paginated-user-reccs", userId, String(page), String(limit), currentUserId || "anonymous"],
+    {
+      tags: ["reccs", "profile"],
+      revalidate: 3600,
+    }
+  )();
+};
+
+export async function getPaginatedReccsByUserId(id: string, page = 1, limit = 8) {
+  const session = await auth();
+  return getCachedPaginatedUserReccs(id, page, limit, session?.user?.id);
+}
+
 export async function createRecc(data: FormData) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");
