@@ -19,8 +19,25 @@ const getCachedProfile = unstable_cache(
   }
 );
 
+export async function getUserProfile(userId: string) {
+  
+  if(!userId) {
+    return null;
+  }
+
+  try{
+    return await prisma.user.findFirst({
+      where: {
+        id: userId
+      }
+    });
+  } catch {
+    throw new Error("Error in fetching user data");
+  }
+}
+
 export async function getProfile() {
-    const session = await auth();
+  const session = await auth();
 
     if(!session?.user?.id) {
         return null;

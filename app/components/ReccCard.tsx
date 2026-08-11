@@ -1,19 +1,37 @@
 import Link from "next/link";
 import ReccImage from "./ReccImage";
 import LikeButton from "./LikeButton";
+import { getUserProfile } from "@/lib/user-action";
+import Image from "next/image";
+import { User } from "lucide-react";
 
-export default function ReccCard({ recc }: { recc: any }) {
+export default async function ReccCard({ recc }: { recc: any }) {
+
+  const user = await getUserProfile(recc?.userId);
+
   return (
     <article
-      className="border border-zinc-800 rounded-xl px-4 py-4 bg-zinc-950/40 flex flex-col gap-3"
+      className="border border-zinc-800 rounded-md px-4 py-4 bg-zinc-950/40 flex flex-col gap-3"
     >
-      <div className="flex items-center gap-2 text-sm text-zinc-400">
-        <div className="border-1 border-zinc-800 rounded-full">image</div>
-        <span className="text-white font-medium">
-          {recc.user?.name ?? "Unknown"}
+      <div className="flex items-center gap-2 text-sm text-zinc-400 pb-2">
+        {user?.image ? (
+          <Image 
+            src={user.image}
+            alt="User Avatar"
+            width={20}
+            height={20}
+            className="rounded-full"
+          />
+        ) : (
+          <User className="h-5 w-5" />
+        )}
+        <span className="text-blue-300 underline underline-offset-2 font-medium">
+          <Link href={`/profile/${user?.id}`}>
+            {user?.name ? `@${user.name}` : "Unknown"}
+          </Link>
         </span>
         <span>→</span>
-        <span>
+        <span className="font-medium">
           recommended a{" "}
           {recc.url ? (
             <Link
@@ -29,7 +47,7 @@ export default function ReccCard({ recc }: { recc: any }) {
         </span>
       </div>
 
-      <h2 className="text-base font-semibold text-white">
+      <h2 className="text-sm font-semibold text-white">
         {recc.title}
       </h2>
       {recc.description && (
