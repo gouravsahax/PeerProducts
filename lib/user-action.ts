@@ -2,22 +2,17 @@
 
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
-import { updateTag, unstable_cache } from 'next/cache';
+import { cacheTag, updateTag } from 'next/cache';
 
-const getCachedProfile = unstable_cache(
-  async (userId: string) => {
-    return await prisma.user.findFirst({
-      where: {
-        id: userId
-      }
-    });
-  },
-  ["user-profile"],
-  {
-    tags: ["profile"],
-    revalidate: 3600,
-  }
-);
+async function getCachedProfile(userId: string) {
+  "use cache";
+  cacheTag("profile");
+  return await prisma.user.findFirst({
+    where: {
+      id: userId
+    }
+  });
+}
 
 export async function getUserProfileByUsername(username: string) {
   

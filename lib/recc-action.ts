@@ -3,17 +3,17 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { updateTag, unstable_cache } from "next/cache";
+import { updateTag, cacheTag } from "next/cache";
 import { uploadImage } from "./cloudinary";
 
-const getCachedPaginatedRecs = (
+async function getCachedPaginatedRecs(
   page: number,
   limit: number,
   search: string,
   userId?: string
-) => {
-  return unstable_cache(
-    async () => {
+) {
+  "use cache";
+  cacheTag("reccs");
       const skip = (page - 1) * limit;
       
       const countWhere = search
@@ -71,17 +71,11 @@ const getCachedPaginatedRecs = (
         reccs: mappedResults,
         total,
       };
-    },
-    ["paginated-reccs", String(page), String(limit), search, userId || "anonymous"],
-    {
-      tags: ["reccs"],
-      revalidate: 3600,
-    }
-  )();
-};
+}
 
-const getCachedMyReccs = unstable_cache(
-  async (userId: string) => {
+async function getCachedMyReccs(userId: string) {
+  "use cache";
+  cacheTag("reccs", "profile");
     const [reccs, user] = await Promise.all([
       prisma.recc.findMany({
         where: {
@@ -105,26 +99,20 @@ const getCachedMyReccs = unstable_cache(
       reccs,
       count: user?.reccCount ?? 0,
     };
-  },
-  ["my-reccs"],
-  {
-    tags: ["reccs", "profile"],
-    revalidate: 3600,
-  }
-);
+}
 
 export async function getReccsByUserId(id:string){
   return getCachedMyReccs(id);
 }
 
-const getCachedPaginatedUserReccs = (
+async function getCachedPaginatedUserReccs(
   userId: string,
   page: number,
   limit: number,
   currentUserId?: string
-) => {
-  return unstable_cache(
-    async () => {
+) {
+  "use cache";
+  cacheTag("reccs", "profile");
       const skip = (page - 1) * limit;
       
       const [reccs, user] = await Promise.all([
@@ -150,14 +138,7 @@ const getCachedPaginatedUserReccs = (
         total,
         totalPages: Math.ceil(total / limit),
       };
-    },
-    ["paginated-user-reccs", userId, String(page), String(limit), currentUserId || "anonymous"],
-    {
-      tags: ["reccs", "profile"],
-      revalidate: 3600,
-    }
-  )();
-};
+}
 
 export async function getPaginatedReccsByUserId(id: string, page = 1, limit = 8) {
   const session = await auth();
