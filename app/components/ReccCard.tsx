@@ -1,13 +1,13 @@
 import Link from "next/link";
 import ReccImage from "./ReccImage";
 import LikeButton from "./LikeButton";
-import { getUserProfile } from "@/lib/user-action";
+import { getUserProfileById } from "@/lib/user-action";
 import Image from "next/image";
 import { User } from "lucide-react";
 
 export default async function ReccCard({ recc }: { recc: any }) {
 
-  const user = await getUserProfile(recc?.userId);
+  const user = await getUserProfileById(recc?.userId);
 
   return (
     <article

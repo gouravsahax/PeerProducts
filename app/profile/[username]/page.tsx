@@ -1,4 +1,4 @@
-import { getUserProfile } from "@/lib/user-action";
+import { getUserProfileByUsername } from "@/lib/user-action";
 import { getPaginatedReccsByUserId } from "@/lib/recc-action";
 import Image from "next/image";
 import { Mail, Award } from "lucide-react";
@@ -17,7 +17,7 @@ export default async function Page({
   const { page } = await searchParams;
   const currentPage = parseInt(page || "1", 10);
 
-  const user = await getUserProfile(username);
+  const user = await getUserProfileByUsername(username);
   
   if (!user) {
     notFound();
