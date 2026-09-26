@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { updateTag, cacheTag } from "next/cache";
+import { cacheLife } from "next/cache";
 import { uploadImage } from "./cloudinary";
 
 async function getCachedPaginatedRecs(
@@ -13,7 +13,11 @@ async function getCachedPaginatedRecs(
   userId?: string
 ) {
   "use cache";
-  cacheTag("reccs");
+  cacheLife({
+    stale: 600,
+    revalidate: 600,
+    expire: 86400,
+  });
       const skip = (page - 1) * limit;
       
       const countWhere = search
@@ -75,7 +79,11 @@ async function getCachedPaginatedRecs(
 
 async function getCachedMyReccs(userId: string) {
   "use cache";
-  cacheTag("reccs", "profile");
+  cacheLife({
+    stale: 600,
+    revalidate: 600,
+    expire: 86400,
+  });
     const [reccs, user] = await Promise.all([
       prisma.recc.findMany({
         where: {
@@ -112,7 +120,11 @@ async function getCachedPaginatedUserReccs(
   currentUserId?: string
 ) {
   "use cache";
-  cacheTag("reccs", "profile");
+  cacheLife({
+    stale: 600,
+    revalidate: 600,
+    expire: 86400,
+  });
       const skip = (page - 1) * limit;
       
       const [reccs, user] = await Promise.all([
@@ -185,8 +197,6 @@ export async function createRecc(data: FormData) {
       timeout: 20000,
     }
   );
-  updateTag("reccs");
-  updateTag("profile");
   redirect("/reccs");
 }
 
@@ -276,7 +286,6 @@ export async function updateRecc(id: string, formData: FormData) {
     },
   });
 
-  updateTag("reccs");
   redirect("/reccs");
 }
 
@@ -320,9 +329,6 @@ export async function deleteRecc(reccId: string) {
       timeout: 20000,
     }
   );
-
-  updateTag("reccs");
-  updateTag("profile");
 }
 
 export async function toggleLike(reccId: string) {
@@ -366,8 +372,6 @@ export async function toggleLike(reccId: string) {
         data: { likeCount: { increment: 1 } },
       });
     }
-
-    updateTag("reccs");
   } catch (error: any) {
     console.error(error);
     throw new Error(`Failed to toggle like: ${error.message || error}`);
