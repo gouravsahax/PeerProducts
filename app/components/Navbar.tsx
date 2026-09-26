@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation';
+import { Suspense } from 'react';
 
-const Navbar = () => {
+const NavbarContent = () => {
   const path : string = usePathname();
 
   return (
@@ -27,6 +28,21 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
+  )
+}
+
+const Navbar = () => {
+  return (
+    <Suspense fallback={
+      <nav className='sticky top-0 bg-zinc-950 w-full z-50'>
+        <div className='flex justify-between items-center px-4 md:px-8 border-b border-zinc-700'>
+          <span className="sm:hidden"><Link href="/">pp</Link></span>
+          <span className="hidden sm:inline"><Link href="/">PeerProducts</Link></span>
+        </div>
+      </nav>
+    }>
+      <NavbarContent />
+    </Suspense>
   )
 }
 
