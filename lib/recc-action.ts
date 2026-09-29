@@ -6,7 +6,70 @@ import { redirect } from "next/navigation";
 import { cacheLife } from "next/cache";
 import { uploadImage } from "./cloudinary";
 
-async function getCachedPaginatedRecs(
+async function getPaginatedRecs(
+  page: number,
+  limit: number,
+  search: string,
+  userId?: string
+) {
+      const skip = (page - 1) * limit;
+      
+      const countWhere = search
+        ? {
+            type: {
+              contains: search,
+              mode: "insensitive" as const,
+            },
+          }
+        : {};
+
+      const total = await prisma.recc.count({ where: countWhere });
+      const results = await prisma.$queryRaw<any[]>`
+          SELECT 
+            r.id,
+            r.title,
+            r.description,
+            r.url,
+            r."imageUrl",
+            r.type,
+            r."likeCount",
+            r."createdAt",
+            r."userId",
+            u.name AS "userName",
+            l."userId" AS "likedByCurrentUser"
+          FROM "Recc" r
+          LEFT JOIN "User" u ON r."userId" = u.id
+          LEFT JOIN "Like" l ON r.id = l."reccId" AND l."userId" = ${userId || ''}
+          WHERE r.type ILIKE ${'%' + search + '%'}
+          ORDER BY GREATEST(-100.0, CAST(r."likeCount" AS DOUBLE PRECISION) - (EXTRACT(EPOCH FROM (timezone('utc', now()) - r."createdAt")) / 86400.0) * 0.5) DESC
+          LIMIT ${limit} OFFSET ${skip}
+        `;
+
+      const mappedResults = results.map((row) => ({
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        url: row.url,
+        imageUrl: row.imageUrl,
+        type: row.type,
+        likeCount: row.likeCount,
+        createdAt: row.createdAt,
+        userId: row.userId,
+        user: {
+          name: row.userName,
+        },
+        likes: row.likedByCurrentUser
+          ? [{ userId: row.likedByCurrentUser }]
+          : [],
+      }));
+
+      return {
+        reccs: mappedResults,
+        total,
+      };
+}
+
+async function getCachedPaginatedLatestRecs(
   page: number,
   limit: number,
   search: string,
@@ -29,9 +92,8 @@ async function getCachedPaginatedRecs(
           }
         : {};
 
-      const [total, results] = await Promise.all([
-        prisma.recc.count({ where: countWhere }),
-        prisma.$queryRaw<any[]>`
+      const total = await prisma.recc.count({ where: countWhere });
+      const results = await prisma.$queryRaw<any[]>`
           SELECT 
             r.id,
             r.title,
@@ -48,10 +110,9 @@ async function getCachedPaginatedRecs(
           LEFT JOIN "User" u ON r."userId" = u.id
           LEFT JOIN "Like" l ON r.id = l."reccId" AND l."userId" = ${userId || ''}
           WHERE r.type ILIKE ${'%' + search + '%'}
-          ORDER BY GREATEST(-100.0, CAST(r."likeCount" AS DOUBLE PRECISION) - (EXTRACT(EPOCH FROM (timezone('utc', now()) - r."createdAt")) / 86400.0) * 0.1) DESC
+          ORDER BY r."createdAt" DESC
           LIMIT ${limit} OFFSET ${skip}
-        `
-      ]);
+        `;
 
       const mappedResults = results.map((row) => ({
         id: row.id,
@@ -204,7 +265,21 @@ export async function getAllRecs(page = 1, limit = 8, search = "") {
   const session = await auth();
   const userId = session?.user?.id;
 
-  const { reccs, total } = await getCachedPaginatedRecs(page, limit, search, userId);
+  const { reccs, total } = await getPaginatedRecs(page, limit, search, userId);
+
+  return {
+    reccs,
+    total,
+    totalPages: Math.ceil(total / limit),
+    currentPage: page,
+  };
+}
+
+export async function getLatestRecs(page = 1, limit = 8, search = "") {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  const { reccs, total } = await getCachedPaginatedLatestRecs(page, limit, search, userId);
 
   return {
     reccs,
