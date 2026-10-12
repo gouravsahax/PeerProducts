@@ -86,8 +86,8 @@ Ensure you have the following installed on your machine:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/gouravsahax/CampusMarket.git
-cd CampusMarket
+git clone https://github.com/gouravsahax/PeerProducts.git
+cd PeerProducts
 ```
 
 ### 2. Install Dependencies
