@@ -1,22 +1,14 @@
-import { getUserProfileByUsername } from "@/lib/user-action";
-import { getPaginatedReccsByUserId } from "@/lib/recc-action";
+import { getUserProfileByUsername } from "@/actions/user";
+import { getPaginatedReccsByUserId } from "@/actions/recc";
 import Image from "next/image";
-import { Award } from "lucide-react";
-import ReccCard from "../../components/ReccCard";
+import { Award, Users } from "lucide-react";
+import ReccCard from "@/components/recc/ReccCard";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import FollowButton from "../components/FollowButton";
-import { Users } from "lucide-react";
+import FollowButton from "@/components/profile/FollowButton";
 import { notFound } from "next/navigation";
-
-interface FollowUser {
-  id: string;
-  name: string | null;
-  username: string;
-  image: string | null;
-  bio?: string | null;
-}
+import type { FollowUser } from "@/types";
 
 function UserListCard({ 
   user, 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import SignInButton from "../components/SignInButton";
+import SignInButton from "@/components/ui/SignInButton";
 
 export const metadata: Metadata = {
   title: "Sign In | PeerProducts",

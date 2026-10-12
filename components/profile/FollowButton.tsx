@@ -1,6 +1,6 @@
 "use client";
 
-import { toggleFollow } from "@/lib/user-action";
+import { toggleFollow } from "@/actions/user";
 import { useTransition } from "react";
 import { Users } from "lucide-react";
 

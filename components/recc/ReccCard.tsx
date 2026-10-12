@@ -1,25 +1,12 @@
 import Link from "next/link";
 import ReccImage from "./ReccImage";
 import LikeButton from "./LikeButton";
-import { getUserProfileById } from "@/lib/user-action";
+import { getUserProfileById } from "@/actions/user";
 import Image from "next/image";
 import { User } from "lucide-react";
+import type { ReccItem } from "@/types";
 
-export interface ReccItem {
-  id: string;
-  title: string;
-  description?: string | null;
-  url?: string | null;
-  imageUrl?: string | null;
-  type: string;
-  likeCount: number;
-  createdAt: Date | string;
-  userId: string;
-  user?: {
-    name?: string | null;
-  } | null;
-  likes?: Array<{ userId: string }>;
-}
+export type { ReccItem };
 
 export default async function ReccCard({ recc }: { recc: ReccItem }) {
   const user = await getUserProfileById(recc?.userId);

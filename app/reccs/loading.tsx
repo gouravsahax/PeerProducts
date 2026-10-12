@@ -1,5 +1,5 @@
 import React from 'react';
-import LoadingMyReccCard from '../components/LoadingMyReccCard';
+import LoadingMyReccCard from '@/components/recc/LoadingMyReccCard';
 
 export default function Loading() {
   return (

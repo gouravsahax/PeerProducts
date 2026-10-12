@@ -2,7 +2,7 @@
 
 import React, { useState, useTransition } from 'react';
 import { ThumbsUp } from 'lucide-react';
-import { toggleLike } from '@/lib/recc-action';
+import { toggleLike } from '@/actions/recc';
 
 interface LikeButtonProps {
   reccId: string;

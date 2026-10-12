@@ -1,7 +1,7 @@
-import { getProfile } from "@/lib/user-action";
-import ProfileHeader from "../profile/components/ProfileHeader";
-import ProfileStats from "../profile/components/ProfileStats";
-import ProfileActions from "../profile/components/ProfileActions";
+import { getProfile } from "@/actions/user";
+import ProfileHeader from "@/components/profile/ProfileHeader";
+import ProfileStats from "@/components/profile/ProfileStats";
+import ProfileActions from "@/components/profile/ProfileActions";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

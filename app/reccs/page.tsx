@@ -1,5 +1,5 @@
-import { getMyReccs } from "@/lib/recc-action"
-import MyReccCard from "../components/MyReccCard";
+import { getMyReccs } from "@/actions/recc";
+import MyReccCard from "@/components/recc/MyReccCard";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

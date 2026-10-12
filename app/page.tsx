@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { getAllRecs, getLatestRecs, getFollowingRecs } from "@/lib/recc-action";
-import ReccCard from "./components/ReccCard";
+import { getAllRecs, getLatestRecs, getFollowingRecs } from "@/actions/recc";
+import ReccCard from "@/components/recc/ReccCard";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 

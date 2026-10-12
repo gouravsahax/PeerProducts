@@ -1,5 +1,5 @@
-import { createRecc } from "@/lib/recc-action"
-import SubmitButton from "../components/SubmitButton"
+import { createRecc } from "@/actions/recc";
+import SubmitButton from "@/components/ui/SubmitButton";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

@@ -2,15 +2,9 @@
 
 import React, { useState, useTransition } from 'react';
 import Image from 'next/image';
-import { updateProfileName, updateProfileUsername } from '@/lib/user-action';
+import { updateProfileName, updateProfileUsername } from '@/actions/user';
 import { Edit3, Check, X, Loader2 } from 'lucide-react';
-
-interface UserData {
-  id: string;
-  name: string | null;
-  username: string | null;
-  image: string | null;
-}
+import type { UserData } from '@/types';
 
 export default function ProfileHeader({ user }: { user: UserData }) {
   const [isEditingName, setIsEditingName] = useState(false);

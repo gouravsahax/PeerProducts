@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getProfile } from "@/lib/user-action";
+import { getProfile } from "@/actions/user";
 
 export default async function ProfileRedirectPage() {
   const user = await getProfile();

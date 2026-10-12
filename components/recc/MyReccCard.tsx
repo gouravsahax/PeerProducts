@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import SubmitButton from "./SubmitButton";
-import { deleteRecc } from "@/lib/recc-action";
-import type { ReccItem } from "./ReccCard";
+import SubmitButton from "@/components/ui/SubmitButton";
+import { deleteRecc } from "@/actions/recc";
+import type { ReccItem } from "@/types";
 
 export default function MyReccCard({ recc }: { recc: ReccItem }) {
   return (

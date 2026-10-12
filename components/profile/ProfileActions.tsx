@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SignOut } from '@/lib/auth-action';
+import { SignOut } from '@/actions/auth';
 import { LogOut } from 'lucide-react';
 
 export default function ProfileActions() {

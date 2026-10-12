@@ -1,5 +1,5 @@
 import React from 'react';
-import LoadingInput from '../components/LoadingInput';
+import LoadingInput from '@/components/ui/LoadingInput';
 
 export default function Loading() {
   return (

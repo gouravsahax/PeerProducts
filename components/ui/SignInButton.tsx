@@ -1,6 +1,6 @@
 "use client";
 
-import { SignIn } from "@/lib/auth-action";
+import { SignIn } from "@/actions/auth";
 
 export default function SignInButton() {
   return (
