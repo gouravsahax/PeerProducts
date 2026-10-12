@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import SignInButton from "../components/SignInButton";
 
 export const metadata: Metadata = {
@@ -12,27 +13,34 @@ export default function AuthPage() {
       
       <div className="relative w-full max-w-[450px] h-[300px] md:h-[400px] flex items-center justify-center shrink-0">
         
-        <div className="absolute left-0 w-[48%] h-[72%] rounded-xl border border-zinc-800 shadow-xl overflow-hidden z-10 transition-all duration-300 hover:-translate-x-2 hover:scale-[1.02] bg-zinc-900">
-          <img
+        <div className="relative left-0 w-[48%] h-[72%] rounded-xl border border-zinc-800 shadow-xl overflow-hidden z-10 transition-all duration-300 hover:-translate-x-2 hover:scale-[1.02] bg-zinc-900">
+          <Image
             src="/home/img3.jpg"
-            alt="Product recommendation 1"
-            className="w-full h-full object-cover"
+            alt="Product recommendation preview 1"
+            fill
+            sizes="250px"
+            className="object-cover"
           />
         </div>
 
-        <div className="absolute right-0 w-[48%] h-[72%] rounded-xl border border-zinc-800 shadow-xl overflow-hidden z-10 transition-all duration-300 hover:translate-x-2 hover:scale-[1.02] bg-zinc-900">
-          <img
+        <div className="relative right-0 w-[48%] h-[72%] rounded-xl border border-zinc-800 shadow-xl overflow-hidden z-10 transition-all duration-300 hover:translate-x-2 hover:scale-[1.02] bg-zinc-900">
+          <Image
             src="/home/img1.jpg"
-            alt="Product recommendation 2"
-            className="w-full h-full object-cover"
+            alt="Product recommendation preview 2"
+            fill
+            sizes="250px"
+            className="object-cover"
           />
         </div>
 
         <div className="absolute w-[44%] h-[92%] rounded-xl border-2 border-zinc-700 shadow-2xl overflow-hidden z-20 transition-all duration-300 hover:scale-[1.05] bg-zinc-900">
-          <img
+          <Image
             src="/home/img2.jpg"
-            alt="Product recommendation 3"
-            className="w-full h-full object-cover"
+            alt="Product recommendation preview 3"
+            fill
+            sizes="250px"
+            priority
+            className="object-cover"
           />
         </div>
 

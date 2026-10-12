@@ -14,8 +14,28 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PeerProducts | Discover products through real recommendations",
+  metadataBase: new URL("https://peerproducts.in"),
+  title: {
+    default: "PeerProducts | Discover products through real recommendations",
+    template: "%s | PeerProducts",
+  },
   description: "A social network where people discover products through real user recommendations and reviews",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    title: "PeerProducts | Discover products through real recommendations",
+    description: "A social network where people discover products through real user recommendations and reviews",
+    url: "https://peerproducts.in",
+    siteName: "PeerProducts",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PeerProducts | Discover products through real recommendations",
+    description: "A social network where people discover products through real user recommendations and reviews",
+  },
 };
 
 export default function RootLayout({
@@ -26,10 +46,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-300">
-        <Navbar/>
+        <Navbar />
         {children}
       </body>
     </html>

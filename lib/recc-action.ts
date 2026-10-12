@@ -6,6 +6,20 @@ import { redirect } from "next/navigation";
 import { cacheLife } from "next/cache";
 import { uploadImage } from "./cloudinary";
 
+interface RawReccRow {
+  id: string;
+  title: string;
+  description: string | null;
+  url: string | null;
+  imageUrl: string | null;
+  type: string;
+  likeCount: number;
+  createdAt: Date;
+  userId: string;
+  userName: string | null;
+  likedByCurrentUser: string | null;
+}
+
 async function getPaginatedRecs(
   page: number,
   limit: number,
@@ -24,7 +38,7 @@ async function getPaginatedRecs(
         : {};
 
       const total = await prisma.recc.count({ where: countWhere });
-      const results = await prisma.$queryRaw<any[]>`
+      const results = await prisma.$queryRaw<RawReccRow[]>`
           SELECT 
             r.id,
             r.title,
@@ -93,7 +107,7 @@ async function getCachedPaginatedLatestRecs(
         : {};
 
       const total = await prisma.recc.count({ where: countWhere });
-      const results = await prisma.$queryRaw<any[]>`
+      const results = await prisma.$queryRaw<RawReccRow[]>`
           SELECT 
             r.id,
             r.title,
@@ -130,6 +144,72 @@ async function getCachedPaginatedLatestRecs(
         likes: row.likedByCurrentUser
           ? [{ userId: row.likedByCurrentUser }]
           : [],
+      }));
+
+      return {
+        reccs: mappedResults,
+        total,
+      };
+}
+
+async function getCachedPaginatedFollowingRecs(
+  page: number,
+  limit: number,
+  search: string,
+  userId: string
+) {
+  "use cache";
+  cacheLife({
+    stale: 600,
+    revalidate: 600,
+    expire: 86400,
+  });
+      const skip = (page - 1) * limit;
+      
+      const countWhere = search
+        ? {
+            type: { contains: search, mode: "insensitive" as const },
+            user: { followers: { some: { followerId: userId } } }
+          }
+        : {
+            user: { followers: { some: { followerId: userId } } }
+          };
+
+      const total = await prisma.recc.count({ where: countWhere });
+      const results = await prisma.$queryRaw<RawReccRow[]>`
+          SELECT 
+            r.id,
+            r.title,
+            r.description,
+            r.url,
+            r."imageUrl",
+            r.type,
+            r."likeCount",
+            r."createdAt",
+            r."userId",
+            u.name AS "userName",
+            l."userId" AS "likedByCurrentUser"
+          FROM "Recc" r
+          INNER JOIN "Follows" f ON r."userId" = f."followingId" AND f."followerId" = ${userId}
+          LEFT JOIN "User" u ON r."userId" = u.id
+          LEFT JOIN "Like" l ON r.id = l."reccId" AND l."userId" = ${userId}
+          WHERE r.type ILIKE ${'%' + search + '%'}
+          ORDER BY r."createdAt" DESC
+          LIMIT ${limit} OFFSET ${skip}
+        `;
+
+      const mappedResults = results.map((row) => ({
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        url: row.url,
+        imageUrl: row.imageUrl,
+        type: row.type,
+        likeCount: row.likeCount,
+        createdAt: row.createdAt,
+        userId: row.userId,
+        user: { name: row.userName },
+        likes: row.likedByCurrentUser ? [{ userId: row.likedByCurrentUser }] : [],
       }));
 
       return {
@@ -280,6 +360,24 @@ export async function getLatestRecs(page = 1, limit = 8, search = "") {
   const userId = session?.user?.id;
 
   const { reccs, total } = await getCachedPaginatedLatestRecs(page, limit, search, userId);
+
+  return {
+    reccs,
+    total,
+    totalPages: Math.ceil(total / limit),
+    currentPage: page,
+  };
+}
+
+export async function getFollowingRecs(page = 1, limit = 8, search = "") {
+  const session = await auth();
+  const userId = session?.user?.id;
+  
+  if (!userId) {
+    return { reccs: [], total: 0, totalPages: 0, currentPage: page };
+  }
+
+  const { reccs, total } = await getCachedPaginatedFollowingRecs(page, limit, search, userId);
 
   return {
     reccs,
@@ -447,8 +545,9 @@ export async function toggleLike(reccId: string) {
         data: { likeCount: { increment: 1 } },
       });
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error(error);
-    throw new Error(`Failed to toggle like: ${error.message || error}`);
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to toggle like: ${message}`);
   }
 }

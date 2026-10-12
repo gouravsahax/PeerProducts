@@ -39,6 +39,7 @@ export default function LikeButton({
     <button
       onClick={handleLike}
       disabled={isPending}
+      aria-label={liked ? 'Unlike this recommendation' : 'Like this recommendation'}
       className={`flex items-center gap-1.5 cursor-pointer transition-colors duration-200 ${
         liked 
           ? 'text-blue-400' 
@@ -48,6 +49,7 @@ export default function LikeButton({
     >
       <ThumbsUp 
         size={14} 
+        aria-hidden="true"
         className={`${liked ? 'fill-blue-400 text-blue-400' : 'text-current'}`} 
       />
       <span>{count}</span>

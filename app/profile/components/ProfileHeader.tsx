@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
+import Image from 'next/image';
 import { updateProfileName, updateProfileUsername } from '@/lib/user-action';
 import { Edit3, Check, X, Loader2 } from 'lucide-react';
 
@@ -35,8 +36,9 @@ export default function ProfileHeader({ user }: { user: UserData }) {
         formData.append('name', trimmed);
         await updateProfileName(formData);
         setIsEditingName(false);
-      } catch (err: any) {
-        setNameError(err.message || 'Failed to update name');
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to update name';
+        setNameError(message);
       }
     });
   };
@@ -53,8 +55,9 @@ export default function ProfileHeader({ user }: { user: UserData }) {
         formData.append('username', trimmed);
         await updateProfileUsername(formData);
         setIsEditingUsername(false);
-      } catch (err: any) {
-        setUsernameError(err.message || 'Failed to update username');
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to update username';
+        setUsernameError(message);
       }
     });
   };
@@ -67,9 +70,15 @@ export default function ProfileHeader({ user }: { user: UserData }) {
   return (
     <div className="flex flex-col items-center mb-6">
       <div className="relative group mb-4">
-        <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-zinc-800 via-zinc-700 to-zinc-600 flex items-center justify-center text-white text-3xl font-semibold shadow-inner border-1 border-zinc-700 select-none overflow-hidden">
+        <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-zinc-800 via-zinc-700 to-zinc-600 flex items-center justify-center text-white text-3xl font-semibold shadow-inner border border-zinc-700 select-none overflow-hidden relative">
           {user.image ? (
-            <img src={user.image} alt={user.name ?? 'User Avatar'} className="w-full h-full object-cover" />
+            <Image
+              src={user.image}
+              alt={user.name ? `${user.name}'s profile avatar` : 'User profile avatar'}
+              width={96}
+              height={96}
+              className="w-full h-full object-cover"
+            />
           ) : (
             getInitials(user.name)
           )}

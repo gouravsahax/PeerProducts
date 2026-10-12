@@ -5,45 +5,53 @@ import { usePathname } from 'next/navigation';
 import { Suspense } from 'react';
 
 const NavbarContent = () => {
-  const path : string = usePathname();
+  const path: string = usePathname();
 
   return (
-    <nav className='sticky top-0 bg-zinc-950 w-full z-50'>
-      <div className='flex justify-between items-center px-4 md:px-8 border-b border-zinc-700'>
-        <span className="sm:hidden"><Link href="/">pp</Link></span>
-        <span className="hidden sm:inline"><Link href="/">PeerProducts</Link></span>
-        <div className='flex gap-6'>
-          <Link href='/' className={`py-2 + ${path === '/' ? 'border-b-2 border-white' : ''}`} >
-              Home
+    <nav aria-label="Main Navigation" className="sticky top-0 bg-zinc-950 w-full z-50">
+      <div className="flex justify-between items-center px-4 md:px-8 border-b border-zinc-700">
+        <span className="sm:hidden font-bold">
+          <Link href="/" aria-label="PeerProducts Home">pp</Link>
+        </span>
+        <span className="hidden sm:inline font-bold">
+          <Link href="/" aria-label="PeerProducts Home">PeerProducts</Link>
+        </span>
+        <div className="flex gap-6">
+          <Link href="/" className={`py-2 ${path === '/' ? 'border-b-2 border-white' : ''}`}>
+            Home
           </Link>
-          <Link href='/create' className={`py-2 + ${path === '/create' ? 'border-b-2 border-white' : ''}`}>
-              Create
+          <Link href="/create" className={`py-2 ${path === '/create' ? 'border-b-2 border-white' : ''}`}>
+            Create
           </Link>
-          <Link href='/reccs' className={`py-2 + ${path === '/reccs' ? 'border-b-2 border-white' : ''}`}>
-              My Reccs
+          <Link href="/reccs" className={`py-2 ${path === '/reccs' ? 'border-b-2 border-white' : ''}`}>
+            My Reccs
           </Link>
-          <Link href='/profile' className={`py-2 + ${path === '/profile' ? 'border-b-2 border-white' : ''}`}>
-              Profile
+          <Link href="/profile" className={`py-2 ${path.startsWith('/profile') || path.startsWith('/settings') ? 'border-b-2 border-white' : ''}`}>
+            Profile
           </Link>
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
 const Navbar = () => {
   return (
     <Suspense fallback={
-      <nav className='sticky top-0 bg-zinc-950 w-full z-50'>
-        <div className='flex justify-between items-center px-4 md:px-8 border-b border-zinc-700'>
-          <span className="sm:hidden"><Link href="/">pp</Link></span>
-          <span className="hidden sm:inline"><Link href="/">PeerProducts</Link></span>
+      <nav aria-label="Main Navigation" className="sticky top-0 bg-zinc-950 w-full z-50">
+        <div className="flex justify-between items-center px-4 md:px-8 border-b border-zinc-700">
+          <span className="sm:hidden font-bold">
+            <Link href="/" aria-label="PeerProducts Home">pp</Link>
+          </span>
+          <span className="hidden sm:inline font-bold">
+            <Link href="/" aria-label="PeerProducts Home">PeerProducts</Link>
+          </span>
         </div>
       </nav>
     }>
       <NavbarContent />
     </Suspense>
-  )
-}
+  );
+};
 
 export default Navbar

@@ -5,8 +5,23 @@ import { getUserProfileById } from "@/lib/user-action";
 import Image from "next/image";
 import { User } from "lucide-react";
 
-export default async function ReccCard({ recc }: { recc: any }) {
+export interface ReccItem {
+  id: string;
+  title: string;
+  description?: string | null;
+  url?: string | null;
+  imageUrl?: string | null;
+  type: string;
+  likeCount: number;
+  createdAt: Date | string;
+  userId: string;
+  user?: {
+    name?: string | null;
+  } | null;
+  likes?: Array<{ userId: string }>;
+}
 
+export default async function ReccCard({ recc }: { recc: ReccItem }) {
   const user = await getUserProfileById(recc?.userId);
 
   return (
@@ -17,26 +32,27 @@ export default async function ReccCard({ recc }: { recc: any }) {
         {user?.image ? (
           <Image
             src={user.image}
-            alt="User Avatar"
+            alt={user?.name ? `${user.name}'s profile avatar` : "User profile avatar"}
             width={30}
             height={30}
             className="rounded-full"
           />
         ) : (
-          <User className="h-5 w-5" />
+          <User className="h-5 w-5" aria-hidden="true" />
         )}
         <span className="text-white hover:underline hover:underline-offset-2 font-medium">
           <Link href={`/profile/${user?.username}`}>
             {user?.name ? user.name : "Unknown"}
           </Link>
         </span>
-        <span>→</span>
+        <span aria-hidden="true">→</span>
         <span className="font-medium">
           recommended a{" "}
           {recc.url ? (
             <Link
               href={recc.url}
               target="_blank"
+              rel="noopener noreferrer"
               className="text-blue-300 underline underline-offset-2"
             >
               {recc.type}
@@ -66,8 +82,12 @@ export default async function ReccCard({ recc }: { recc: any }) {
           initialLikeCount={recc.likeCount}
           initialHasLiked={Boolean(recc.likes && recc.likes.length > 0)}
         />
-        <span className="ml-auto">
-          {new Date(recc.createdAt).toLocaleDateString()}
+        <span className="ml-auto" suppressHydrationWarning>
+          {new Date(recc.createdAt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
         </span>
       </div>
     </article>

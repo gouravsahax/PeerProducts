@@ -25,6 +25,9 @@ model User {
   reccs         Recc[]
   likes         Like[]
 
+  followers     Follows[] @relation("follower")
+  following     Follows[] @relation("following")
+
   accounts      Account[]
   sessions      Session[]
 
@@ -94,4 +97,14 @@ model Like {
   recc      Recc @relation(fields: [reccId], references: [id], onDelete: Cascade)
 
   @@id([userId, reccId])
+}
+
+model Follows {
+  followerId  String
+  followingId String
+
+  follower    User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
 }

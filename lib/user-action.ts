@@ -24,6 +24,11 @@ export async function getUserProfileByUsername(username: string) {
     return await prisma.user.findFirst({
       where: {
         username: username
+      },
+      include: {
+        _count: {
+          select: { followers: true, following: true }
+        }
       }
     });
   } catch {
@@ -41,6 +46,11 @@ export async function getUserProfileById(userId: string) {
     return await prisma.user.findFirst({
       where: {
         id: userId
+      },
+      include: {
+        _count: {
+          select: { followers: true, following: true }
+        }
       }
     });
   } catch {
@@ -122,11 +132,52 @@ export async function updateProfileUsername(formData: FormData) {
         });
         updateTag("profile");
         updateTag("reccs");
-    } catch (error: any) {
-        if (error.code === 'P2002') {
+    } catch (error: unknown) {
+        if (typeof error === 'object' && error !== null && 'code' in error && (error as { code: string }).code === 'P2002') {
             throw new Error("Username is already taken");
         }
         console.error(error);
         throw new Error("Failed to update profile username");
     }
+}
+
+export async function toggleFollow(targetUserId: string) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+  
+  const currentUserId = session.user.id;
+  if (currentUserId === targetUserId) throw new Error("Cannot follow yourself");
+
+  try {
+    const existingFollow = await prisma.follows.findUnique({
+      where: {
+        followerId_followingId: {
+          followerId: currentUserId,
+          followingId: targetUserId,
+        },
+      },
+    });
+
+    if (existingFollow) {
+      await prisma.follows.delete({
+        where: {
+          followerId_followingId: {
+            followerId: currentUserId,
+            followingId: targetUserId,
+          },
+        },
+      });
+    } else {
+      await prisma.follows.create({
+        data: {
+          followerId: currentUserId,
+          followingId: targetUserId,
+        },
+      });
+    }
+    updateTag("profile");
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to toggle follow");
+  }
 }
